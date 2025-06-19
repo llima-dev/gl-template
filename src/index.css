@@ -67,13 +67,6 @@ button:focus-visible {
   }
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  height: 100vh;
-}
-
 html, body, #root {
   margin: 0;
   padding: 0;

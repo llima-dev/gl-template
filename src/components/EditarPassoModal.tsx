@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTemplateStore } from '../context/TemplateContext';
-import { salvarNoStorage } from '../helpers';
 
 type Props = {
   id: string;

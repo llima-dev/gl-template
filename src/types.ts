@@ -12,9 +12,12 @@ export type BlocoCodigo = {
   codigo: string;
 };
 
+export type PassoPreparativo = { id: string; texto: string };
+
 export type Preparativo = {
+  id: string;
   titulo: string;
-  passos: string[];
+  passos: PassoPreparativo[];
 };
 
 export type LinkExterno = {

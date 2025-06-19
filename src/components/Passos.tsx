@@ -19,6 +19,16 @@ import { useTemplateStore } from "../context/TemplateContext";
 import type { Passo } from "../types";
 import EditarPassoModal from "./EditarPassoModal";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGripLines,
+  faPen,
+  faTrashAlt,
+  faListOl,
+  faPlus,
+  faMinus,
+} from "@fortawesome/free-solid-svg-icons";
+
 import "./Passos.css";
 
 function SortableItem({
@@ -52,7 +62,7 @@ function SortableItem({
     >
       {/* Ícone de arrastar */}
       <span style={{ cursor: "grab" }} {...attributes} {...listeners}>
-        <i className="fas fa-grip-lines text-muted"></i>
+        <FontAwesomeIcon icon={faGripLines} className="text-muted" />
       </span>
 
       {/* Conteúdo principal */}
@@ -86,7 +96,7 @@ function SortableItem({
             }}
             title="Editar"
           >
-            <i className="fas fa-pen"></i>
+            <FontAwesomeIcon icon={faPen} />
           </button>
         )}
 
@@ -99,7 +109,7 @@ function SortableItem({
           }}
           title="Remover"
         >
-          <i className="fas fa-trash-alt"></i>
+          <FontAwesomeIcon icon={faTrashAlt} />
         </button>
       </div>
     </li>
@@ -159,7 +169,7 @@ export default function Passos() {
   return (
     <div className="mb-4">
       <label className="form-label fw-bold">
-        <i className="fas fa-list-ol me-2 text-secondary"></i>
+        <FontAwesomeIcon icon={faListOl} className="me-2 text-secondary" />
         Passos de Execução
       </label>
 
@@ -178,7 +188,7 @@ export default function Passos() {
           type="button"
           onClick={() => adicionarPasso()}
         >
-          <i className="fas fa-plus"></i>
+          <FontAwesomeIcon icon={faPlus} />
         </button>
       </div>
 
@@ -188,7 +198,7 @@ export default function Passos() {
           className="btn btn-outline-secondary btn-sm"
           onClick={() => adicionarPasso(true)}
         >
-          <i className="fas fa-minus me-1"></i> Divisória
+          <FontAwesomeIcon icon={faMinus} className="me-1" /> Divisória
         </button>
       </div>
 
