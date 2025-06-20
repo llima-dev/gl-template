@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTemplateStore } from '../context/TemplateContext';
+import { smartReplace } from '../helpers';
 
 export default function Criterios() {
   const { template, setTemplate } = useTemplateStore();
@@ -45,7 +46,7 @@ export default function Criterios() {
           className="form-control"
           placeholder="Descreva um critério e pressione Enter"
           value={novoCriterio}
-          onChange={(e) => setNovoCriterio(e.target.value)}
+          onChange={(e) => setNovoCriterio(smartReplace(e.target.value))}
           onKeyDown={(e) => e.key === "Enter" && adicionar()}
         />
         <button className="btn btn-outline-secondary" type="button" onClick={adicionar}>
@@ -61,7 +62,7 @@ export default function Criterios() {
                 type="text"
                 className="form-control me-2"
                 value={textoEdicao}
-                onChange={(e) => setTextoEdicao(e.target.value)}
+                onChange={(e) => setTextoEdicao(smartReplace(e.target.value))}
                 onBlur={() => salvarEdicao(index)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") salvarEdicao(index);

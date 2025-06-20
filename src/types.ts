@@ -7,7 +7,8 @@ export type Passo = {
 };
 
 export type BlocoCodigo = {
-  titulo?: string;
+  id: string;
+  titulo: string;
   linguagem: string;
   codigo: string;
 };

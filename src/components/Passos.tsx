@@ -18,6 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useTemplateStore } from "../context/TemplateContext";
 import type { Passo } from "../types";
 import EditarPassoModal from "./EditarPassoModal";
+import { smartReplace } from '../helpers';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -180,7 +181,7 @@ export default function Passos() {
           className="form-control"
           placeholder="Descreva o passo e pressione Enter"
           value={novoPasso}
-          onChange={(e) => setNovoPasso(e.target.value)}
+          onChange={(e) => setNovoPasso(smartReplace(e.target.value))}
           onKeyDown={(e) => e.key === "Enter" && adicionarPasso()}
         />
         <button

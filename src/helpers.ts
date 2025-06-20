@@ -16,3 +16,18 @@ export function escaparMarkdown(texto: string): string {
 export function salvarNoStorage(template: Template) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(template));
 }
+
+export function smartReplace(texto: string): string {
+  return texto
+    .replace(/->/g, '→')
+    .replace(/=>/g, '⇒')
+    .replace(/<-/g, '←')
+    .replace(/<=/g, '≤')
+    .replace(/>=/g, '≥')
+    .replace(/!=/g, '≠')
+    .replace(/~/g, '≈')
+    .replace(/->/g, '→')
+    .replace(/<-/g, '←')
+    .replace(/(\s)>(\s|$)/g, '$1→$2')
+  ;
+}
