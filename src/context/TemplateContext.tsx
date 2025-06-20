@@ -4,8 +4,8 @@ import {
   useContext,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
+import type { ReactNode } from "react";
 import type { Template } from "../types";
 import { STORAGE_KEY } from "../consts";
 

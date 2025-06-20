@@ -1,7 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCode, faLink } from "@fortawesome/free-solid-svg-icons";
 
-export default function Toolbar({ onAddPreparativo, onAbrirModalBlocoCodigo }) {
+type ToolbarProps = {
+  onAddPreparativo: () => void;
+  onAbrirModalBlocoCodigo: () => void;
+};
+
+export default function Toolbar({ onAddPreparativo, onAbrirModalBlocoCodigo }: ToolbarProps) {
   return (
     <div className="d-flex gap-3 mb-3">
       <button className="btn btn-sm btn-outline-primary" onClick={onAddPreparativo}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTemplateStore } from '../context/TemplateContext';
 
 type Props = {

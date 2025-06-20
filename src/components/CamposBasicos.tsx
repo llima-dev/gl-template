@@ -1,4 +1,3 @@
-import React from "react";
 import { useTemplateStore } from '../context/TemplateContext';
 
 export default function CamposBasicos() {
