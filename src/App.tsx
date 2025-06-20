@@ -8,6 +8,9 @@ import Impacto from "./components/Impacto";
 import AmbienteTestado from "./components/AmbienteTestado";
 import Comentario from "./components/Comentario";
 import Preparativos from "./components/Preparativos";
+import ToolbarFlutuante from "./components/ToolbarFlutuante";
+
+import { gerarMarkdown } from "./helpers";
 
 export default function App() {
   const { template } = useTemplateStore();
@@ -40,6 +43,21 @@ export default function App() {
             <Impacto />
             <hr className="my-4" />
             <AmbienteTestado />
+            <ToolbarFlutuante />
+            <div className="mt-4">
+              <label className="form-label fw-bold">Markdown Gerado</label>
+              <textarea
+                className="form-control"
+                rows={12}
+                readOnly
+                style={{
+                  fontFamily: "monospace",
+                  background: "#222",
+                  color: "#fff",
+                }}
+                value={gerarMarkdown(template)}
+              />
+            </div>
           </div>
         </div>
       </div>
