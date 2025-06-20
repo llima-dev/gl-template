@@ -35,6 +35,7 @@ export function smartReplace(texto: string): string {
 }
 
 export function escaparUnderscores(texto: string) {
+  if (typeof texto !== "string") return "";
   return texto.replace(/_/g, '\\_');
 }
 
