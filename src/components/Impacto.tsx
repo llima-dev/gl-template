@@ -1,12 +1,13 @@
 import { useTemplateStore } from "../context/TemplateContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye } from "@fortawesome/free-solid-svg-icons";
+import { smartReplace } from "../helpers";
 
 export default function Impacto() {
   const { template, setTemplate } = useTemplateStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const linhas = e.target.value
+    const linhas = smartReplace(e.target.value)
       .split("\n")
       .map((linha) => (linha.startsWith("- ") ? linha : `- ${linha}`))
       .join("\n");

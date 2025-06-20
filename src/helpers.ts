@@ -85,7 +85,6 @@ export function gerarMarkdown(template: Template): string {
   // PONTOS DE ATENÇÃO (ajuste conforme seu template)
   if (template.comentariosAtencao && template.comentariosAtencao.length > 0) {
     md += `### :exclamation: Pontos de atenção\n\n`;
-    md += `> Mostrar o título + comentários somente se houver pelo menos um comentário.\n\n`;
     template.comentariosAtencao.forEach((c) => {
       md += `> ${escaparUnderscores(c)}\n`;
     });
