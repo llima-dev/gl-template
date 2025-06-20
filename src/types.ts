@@ -47,4 +47,5 @@ export type Template = {
     oracleUtf: boolean;
   };
   incluirFluxograma: boolean;
+  arquivados?: Template[];
 };

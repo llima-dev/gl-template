@@ -18,6 +18,17 @@ export default function MarkdownPreview({
 }: MarkdownPreviewProps) {
   const markdownComEmojis = substituirShortcodesPorEmojis(markdown);
 
+    if (!markdown) {
+      return (
+        <div
+          className={`markdown-preview ${className}`}
+          style={{ ...style, padding: 24, fontSize: "1rem" }}
+        >
+          <em>Nenhum template selecionado.</em>
+        </div>
+      );
+    }
+
   return (
     <div
       className={`markdown-preview ${className}`}

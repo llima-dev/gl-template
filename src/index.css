@@ -97,3 +97,9 @@ html, body, #root {
 .card-content {
   margin-top: 10px;
 }
+
+.copyright {
+  color: whitesmoke;
+  opacity: 0.6;
+  font-size: 9px;
+}

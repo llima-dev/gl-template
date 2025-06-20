@@ -27,6 +27,7 @@ const modeloVazio: Template = {
     oracleUtf: false,
   },
   incluirFluxograma: false,
+  arquivados: [],
 };
 
 const TemplateContext = createContext<

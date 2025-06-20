@@ -188,12 +188,15 @@ export function copiarParaClipboard(texto: string) {
     document.body.removeChild(textarea);
   }
 
-  // SweetAlert2 toast lateral
-  Swal.fire({
+  sweetMessage('Markdown copiado!');
+}
+
+export function sweetMessage(message: string) {
+    Swal.fire({
     toast: true,
-    position: "bottom-end",
+    position: "top-end",
     icon: "success",
-    title: "Markdown copiado!",
+    title: message,
     showConfirmButton: false,
     timer: 1300,
     timerProgressBar: true,
@@ -203,4 +206,29 @@ export function copiarParaClipboard(texto: string) {
       popup: 'shadow'
     }
   });
+}
+
+export function exportarParaJSON(obj: any, nome: string = "template") {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj, null, 2));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", nome + ".json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+export function importarDeJSON(event: React.ChangeEvent<HTMLInputElement>, onLoad: (data: any) => void) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const json = JSON.parse(e.target?.result as string);
+      onLoad(json);
+    } catch {
+      sweetMessage("Arquivo inválido!");
+    }
+  };
+  reader.readAsText(file);
 }

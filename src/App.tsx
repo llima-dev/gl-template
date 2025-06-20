@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTemplateStore } from "./context/TemplateContext";
@@ -15,6 +16,12 @@ import { gerarMarkdown } from "./helpers";
 
 export default function App() {
   const { template } = useTemplateStore();
+
+  useEffect(() => {
+    document.title = template.nomeTarefa
+      ? `Template | ${template.nomeTarefa}`
+      : "Template";
+  }, [template.nomeTarefa]);
 
   return (
     <div className="d-flex justify-content-center align-items-start min-vh-100 bg-light">
@@ -82,7 +89,7 @@ export default function App() {
                     overflow: "auto",
                   }}
                 >
-                  <MarkdownPreview markdown={gerarMarkdown(template)} />
+                  <MarkdownPreview markdown={template.nomeTarefa ? gerarMarkdown(template) : ''} />
                 </div>
               </div>
             </div>
