@@ -74,3 +74,26 @@ html, body, #root {
   height: 100%;
   display: block; /* ou remova se quiser usar Bootstrap */
 }
+
+.markdown-preview {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.markdown-preview * {
+  font-size: inherit;
+}
+
+.markdown-preview blockquote {
+  background: #f9f9f9;
+  border-left: 4px solid #d0d0d0;
+  margin: 0 0 1em 0;
+  padding: 0.7em 1em;
+  color: #555;
+  font-style: italic;
+  border-radius: 0 8px 8px 0;
+}
+
+.card-content {
+  margin-top: 10px;
+}

@@ -58,6 +58,7 @@ export function substituirShortcodesPorEmojis(texto: string): string {
     ":chart:": "💹",
     ":exclamation:": "❗️"
   };
+  
   return texto.replace(/:[^:\s]+:/g, match => mapa[match] || match);
 }
 

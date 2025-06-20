@@ -9,15 +9,12 @@ type Props = {
 export default function EditarPassoModal({ id, onClose }: Props) {
   const { template, setTemplate } = useTemplateStore();
 
-  // 🔁 Busca o passo, mas pode ser undefined inicialmente
   const passo = template.passos.find((p) => p.id === id);
 
-  // 🔐 Inicializa os states com valores padrão
   const [texto, setTexto] = useState("");
   const [critico, setCritico] = useState(false);
   const [vinculados, setVinculados] = useState<number[]>([]);
 
-  // 🧠 Atualiza quando o passo existir
   useEffect(() => {
     if (passo) {
       setTexto(passo.texto);
@@ -26,7 +23,6 @@ export default function EditarPassoModal({ id, onClose }: Props) {
     }
   }, [passo]);
 
-  // ⛔️ Se não encontrou, não renderiza
   if (!passo) return null;
 
   function toggleCriterio(idx: number) {
@@ -57,72 +53,64 @@ export default function EditarPassoModal({ id, onClose }: Props) {
       style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
     >
       <div className="modal-dialog modal-lg">
-        <div className="modal-content shadow">
-          <div className="modal-header">
+        <div className="modal-content shadow border-0">
+          <div className="modal-header pb-2">
             <h5 className="modal-title">Editar Passo</h5>
             <button className="btn-close" onClick={onClose}></button>
           </div>
 
-          <div className="modal-body">
-            {/* Campo de texto */}
-            <div className="mb-3">
+          <div className="modal-body pt-2">
+            <div className="mb-2">
               <label className="form-label">Texto do Passo</label>
               <textarea
                 className="form-control"
-                rows={3}
+                rows={2}
                 value={texto}
                 onChange={(e) => setTexto(e.target.value)}
+                style={{ resize: "vertical" }}
               />
             </div>
 
-            {/* Check de crítico */}
-            <div className="form-check mb-3">
+            <div className="form-check form-switch mb-3">
               <input
                 type="checkbox"
                 className="form-check-input"
                 id="criticoCheck"
                 checked={critico}
                 onChange={(e) => setCritico(e.target.checked)}
+                style={{ cursor: "pointer" }}
               />
               <label className="form-check-label" htmlFor="criticoCheck">
                 Marcar como crítico
               </label>
             </div>
 
-            {/* Lista de critérios */}
             <div className="mb-2">
-              <label className="form-label">Vincular Critérios:</label>
-              <div className="row">
+              <label className="form-label mb-1">Vincular Critérios:</label>
+              <div className="d-flex flex-wrap gap-2">
                 {template.criterios.map((criterio, idx) => (
-                  <div className="col-md-6" key={idx}>
-                    <div className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id={`criterio-${idx}`}
-                        checked={vinculados.includes(idx)}
-                        onChange={() => toggleCriterio(idx)}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`criterio-${idx}`}
-                      >
-                        {criterio}
-                      </label>
-                    </div>
-                  </div>
+                  <button
+                    key={idx}
+                    type="button"
+                    className={`btn btn-sm px-3 py-1 rounded-pill 
+                      ${vinculados.includes(idx) ? "btn-warning" : "btn-outline-secondary"}
+                    `}
+                    style={{ userSelect: "none" }}
+                    onClick={() => toggleCriterio(idx)}
+                  >
+                    {criterio}
+                  </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Ações */}
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>
+          <div className="modal-footer border-0 pt-1">
+            <button className="btn btn-link" onClick={onClose}>
               Cancelar
             </button>
             <button className="btn btn-primary" onClick={salvar}>
-              Salvar Alterações
+              Salvar
             </button>
           </div>
         </div>

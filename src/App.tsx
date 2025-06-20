@@ -21,7 +21,7 @@ export default function App() {
         className="mx-auto px-3"
         style={{ maxWidth: "1200px", width: "100%" }}
       >
-        <div className="card shadow-sm">
+        <div className="card shadow-sm card-content">
           <div className="card-body">
             <h1 className="h4">
               Gerador de Template GitLab
