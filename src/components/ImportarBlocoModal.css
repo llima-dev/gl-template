@@ -1,0 +1,96 @@
+/* --- Modal: corpo com scroll bonito --- */
+.modal-body {
+  max-height: 440px;
+  overflow-y: auto;
+  background: #f7f7fa;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #6cb4f6 #f1f1f1;
+}
+
+/* --- Scrollbar bonita no Chrome/Safari --- */
+.modal-body::-webkit-scrollbar {
+  width: 9px;
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+.modal-body::-webkit-scrollbar-thumb {
+  background: #6cb4f6;
+  border-radius: 8px;
+  border: 2px solid #f1f1f1;
+}
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #3997ea;
+}
+
+/* --- Bloco colapsável --- */
+.importar-bloco {
+  border: 1.5px solid #e6ecf2;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  background: #fff;
+  transition: box-shadow 0.15s;
+  box-shadow: 0 2px 6px #0001;
+}
+
+.importar-bloco.ativo {
+  border-color: #3997ea;
+  box-shadow: 0 4px 16px #3997ea22;
+}
+
+.importar-bloco-header {
+  font-weight: 600;
+  font-size: 1.04em;
+  padding: 10px 16px;
+  color: #2470b9;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  border-radius: 12px;
+  transition: background 0.18s;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.importar-bloco-header:hover,
+.importar-bloco.ativo .importar-bloco-header {
+  background: #eaf3fc;
+  color: #1c5084;
+}
+
+.importar-bloco-body {
+  padding: 14px 28px 18px 28px;
+  background: #f8fafc;
+  border-top: 1px solid #e6ecf2;
+  border-radius: 0 0 10px 10px;
+  margin-top: -2px;
+  animation: fadein 0.2s;
+}
+@keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.importar-bloco-body ol {
+  margin-bottom: 12px;
+}
+.importar-bloco-body li {
+  margin-bottom: 2px;
+  font-size: 1em;
+  color: #23272f;
+}
+
+/* --- Botão importar --- */
+.importar-bloco-body .btn-primary {
+  background: #3997ea;
+  border: none;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.98em;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.importar-bloco-body .btn-primary:hover {
+  background: #2470b9;
+}

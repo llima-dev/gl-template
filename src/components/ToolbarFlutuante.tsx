@@ -1,20 +1,46 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faTrash, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
 import {
   copiarParaClipboard,
   gerarMarkdown,
   sweetMessage,
   exportarParaJSON,
-  importarDeJSON,
+  importarDeJSON
 } from "../helpers";
 import { useTemplateStore } from "../context/TemplateContext";
 import type { Template } from "../types";
 
 export default function ToolbarFlutuante() {
-  const { template, setTemplate } = useTemplateStore();
+  const { template, setTemplate, limpar } = useTemplateStore();
   const [mostrarArquivados, setMostrarArquivados] = useState(false);
   const [aberto, setAberto] = useState(false);
+  const [busca, setBusca] = useState("");
+
+  async function handleLimpar() {
+    const result = await Swal.fire({
+      title: "Limpar mural?",
+      text: "Tem certeza que deseja limpar o mural? Essa ação não pode ser desfeita.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, limpar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+      focusCancel: true,
+    });
+
+    if (result.isConfirmed) {
+      limpar();
+      Swal.fire({
+        title: "Mural limpo!",
+        text: "Seu mural foi apagado com sucesso.",
+        icon: "success",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+    }
+  }
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -75,6 +101,12 @@ export default function ToolbarFlutuante() {
       arquivados: novosArquivados,
     });
   }
+
+  const arquivadosFiltrados = template.arquivados?.filter(
+    (t) =>
+      (t.nomeTarefa || "").toLowerCase().includes(busca.toLowerCase()) ||
+      (t.escopo || "").toLowerCase().includes(busca.toLowerCase())
+  );
 
   return (
     <>
@@ -151,9 +183,9 @@ export default function ToolbarFlutuante() {
             Copiar
           </button>
 
-          <button className="btn btn-dark btn-block text-danger" disabled>
+          <button className="btn btn-dark btn-sm btn-block text-danger" onClick={handleLimpar}>
             <FontAwesomeIcon icon={faTrash} className="me-2" />
-            Limpar Rascunho
+            Limpar templates
           </button>
           <small className="copyright d-flex justify-content-center">
             Desenvolvido por Lindomar Lima (ACT)
@@ -187,44 +219,60 @@ export default function ToolbarFlutuante() {
                   />
                 </div>
                 <div className="modal-body">
-                  {template.arquivados?.length ? (
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    placeholder="Buscar por nome ou escopo..."
+                    value={busca}
+                    onChange={(e) => setBusca(e.target.value)}
+                    autoFocus
+                  />
+                  {arquivadosFiltrados?.length ? (
                     <ul className="list-group">
-                      {template.arquivados.map((t, i) => (
-                        <li
-                          key={i}
-                          className="list-group-item d-flex justify-content-between align-items-start"
-                        >
-                          <div>
-                            <strong>{t.nomeTarefa || "(sem nome)"}</strong>
-                            <br />
-                            <small className="text-muted">
-                              {t.escopo || "Sem escopo"}
-                            </small>
-                          </div>
-                          <div
-                            className="btn-group btn-group-sm"
-                            role="group"
-                            aria-label="Ações arquivado"
+                      {arquivadosFiltrados.map((t) => {
+                        const idxOriginal =
+                          template.arquivados?.findIndex((arq) => arq === t) ??
+                          -1;
+
+                        return (
+                          <li
+                            key={idxOriginal}
+                            className="list-group-item d-flex justify-content-between align-items-start"
                           >
-                            <button
-                              type="button"
-                              className="btn btn-outline-danger"
-                              onClick={() => removerArquivado(i)}
-                              title="Remover permanentemente"
+                            <div>
+                              <strong>{t.nomeTarefa || "(sem nome)"}</strong>
+                              <br />
+                              <small className="text-muted">
+                                {t.escopo || "Sem escopo"}
+                              </small>
+                            </div>
+                            <div
+                              className="btn-group btn-group-sm"
+                              role="group"
+                              aria-label="Ações arquivado"
                             >
-                              Remover
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-outline-primary"
-                              onClick={() => desarquivarTemplate(i)}
-                              title="Desarquivar"
-                            >
-                              Desarquivar
-                            </button>
-                          </div>
-                        </li>
-                      ))}
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={() => removerArquivado(idxOriginal)}
+                                title="Remover permanentemente"
+                                disabled={idxOriginal === -1}
+                              >
+                                Remover
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-outline-primary"
+                                onClick={() => desarquivarTemplate(idxOriginal)}
+                                title="Desarquivar"
+                                disabled={idxOriginal === -1}
+                              >
+                                Desarquivar
+                              </button>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   ) : (
                     <p>Nenhum template arquivado.</p>

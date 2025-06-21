@@ -4,6 +4,7 @@ import { useTemplateStore } from "../context/TemplateContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Passo, BlocoCodigo, Preparativo } from "../types";
 import { smartReplace } from '../helpers';
+import ImportarBlocoModal from "./ImportarBlocoModal";
 import {
   faToolbox,
   faCode,
@@ -12,6 +13,9 @@ import {
   faTrash,
   faChevronDown,
   faChevronRight,
+  faEdit,
+  faSave,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 
 // @ts-expect-error erro de lib
@@ -48,6 +52,77 @@ const linguagens = [
   "json",
   "yaml",
 ];
+
+type BlocoCodigoColapsavelProps = {
+  bloco: BlocoCodigo;
+  onRemover: (id: string) => void;
+};
+
+function BlocoCodigoColapsavel({ bloco, onRemover, onSalvar }: BlocoCodigoColapsavelProps & { onSalvar: (id: string, novoCodigo: string) => void }) {
+  const [aberto, setAberto] = useState(false);
+  const [editando, setEditando] = useState(false);
+  const [codigo, setCodigo] = useState(bloco.codigo);
+
+  return (
+    <div className="card mb-2">
+      <div
+        className="card-header d-flex align-items-center justify-content-between"
+        style={{ cursor: "pointer", userSelect: "none" }}
+        onClick={() => setAberto((v) => !v)}
+      >
+        <div className="d-flex align-items-center flex-grow-1">
+          <FontAwesomeIcon icon={aberto ? faChevronDown : faChevronRight} className="me-2 text-secondary" />
+          <strong>{bloco.titulo || <span className="text-muted">Sem título</span>}</strong>
+          <span className="badge bg-secondary ms-3">{bloco.linguagem}</span>
+        </div>
+        {/* Ações */}
+        <div className="ms-2 d-flex align-items-center gap-2" onClick={e => e.stopPropagation()}>
+          {!editando && (
+            <button className="btn btn-sm btn-link text-primary" title="Editar código" onClick={() => setEditando(true)}>
+              <FontAwesomeIcon icon={faEdit} />
+            </button>
+          )}
+          {editando && (
+            <>
+              <button className="btn btn-sm btn-link text-success" title="Salvar edição" onClick={() => { onSalvar(bloco.id, codigo); setEditando(false); }}>
+                <FontAwesomeIcon icon={faSave} />
+              </button>
+              <button className="btn btn-sm btn-link text-danger" title="Cancelar edição" onClick={() => { setCodigo(bloco.codigo); setEditando(false); }}>
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </>
+          )}
+          <button className="btn btn-sm btn-link text-danger" title="Remover bloco" onClick={() => onRemover(bloco.id)}>
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        </div>
+      </div>
+      {aberto && (
+        <div className="card-body p-2" style={{ background: "#181c20", borderRadius: "0 0 8px 8px" }}>
+          <div style={{ maxHeight: 320, overflow: "auto" }}>
+            {!editando ? (
+              <SyntaxHighlighter
+                language={bloco.linguagem}
+                style={atomOneDark}
+                customStyle={{ margin: 0, borderRadius: "8px" }}
+              >
+                {bloco.codigo}
+              </SyntaxHighlighter>
+            ) : (
+              <textarea
+                className="form-control font-monospace"
+                style={{ minHeight: 150, background: "#101318", color: "#d8dee9" }}
+                value={codigo}
+                autoFocus
+                onChange={e => setCodigo(e.target.value)}
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 // SortablePasso component
 type SortablePassoProps = {
@@ -137,6 +212,7 @@ function SortablePasso({
 }
 
 export default function Preparativos() {
+  const [modalImportarGrupoPrep, setModalImportarGrupoPrep] = useState<string | null>(null);
   const [prepsAbertos, setPrepsAbertos] = useState<{ [id: string]: boolean }>(
     {}
   );
@@ -151,6 +227,13 @@ export default function Preparativos() {
   const [tituloBloco, setTituloBloco] = useState("");
   const [linguagem, setLinguagem] = useState("javascript");
   const [codigo, setCodigo] = useState("");
+
+  function salvarCodigoBloco(id: string, novoCodigo: string) {
+    const novos = template.blocosDeCodigo.map((b) =>
+      b.id === id ? { ...b, codigo: novoCodigo } : b
+    );
+    setTemplate({ ...template, blocosDeCodigo: novos });
+  }
 
   function abrirModalBloco() {
     setTituloBloco("");
@@ -250,46 +333,6 @@ export default function Preparativos() {
         Preparativos
       </label>
 
-      {/* Blocos de Código acima dos preparativos */}
-      {(template.blocosDeCodigo || []).length > 0 && (
-        <div className="mb-3">
-          <label className="form-label">
-            <FontAwesomeIcon icon={faCode} className="me-2 text-secondary" />
-            Blocos de Código
-          </label>
-          {template.blocosDeCodigo.map((bloco: BlocoCodigo) => (
-            <div key={bloco.id} className="card mb-2">
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <strong>
-                  {bloco.titulo || (
-                    <span className="text-muted">Sem título</span>
-                  )}
-                </strong>
-                <button
-                  className="btn btn-sm btn-link text-danger"
-                  onClick={() => removerBloco(bloco.id)}
-                  title="Remover"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              </div>
-              <div className="card-body">
-                <span className="badge bg-secondary mb-2">
-                  {bloco.linguagem}
-                </span>
-                <SyntaxHighlighter
-                  language={bloco.linguagem}
-                  style={atomOneDark}
-                  customStyle={{ margin: 0, borderRadius: "8px" }} // se quiser arredondar
-                >
-                  {bloco.codigo}
-                </SyntaxHighlighter>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
       <div className="d-flex gap-3 mb-3">
         <button
           className="btn btn-sm btn-outline-dark"
@@ -306,6 +349,16 @@ export default function Preparativos() {
           Bloco de Código
         </button>
       </div>
+
+      {/* Blocos de Código acima dos preparativos */}
+      {template.blocosDeCodigo.map((bloco: BlocoCodigo) => (
+        <BlocoCodigoColapsavel
+          key={bloco.id}
+          bloco={bloco}
+          onRemover={removerBloco}
+          onSalvar={salvarCodigoBloco}
+        />
+      ))}
 
       {/* Modal do bloco de código */}
       {modalAberto && (
@@ -424,7 +477,10 @@ export default function Preparativos() {
           {/* Só renderiza o conteúdo se estiver aberto */}
           {prepsAbertos[prep.id] && (
             <div className="card-body bg-light">
-              <div className="input-group mb-2">
+              <div
+                className="input-group mb-2"
+                style={{ position: "relative" }}
+              >
                 <input
                   className="form-control form-control-sm"
                   placeholder="Passo"
@@ -437,7 +493,7 @@ export default function Preparativos() {
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      adicionarPasso(smartReplace(prep.id), novosPassos[prep.id] || "");
+                      adicionarPasso(prep.id, novosPassos[prep.id] || "");
                       setNovosPassos({ ...novosPassos, [prep.id]: "" });
                     }
                   }}
@@ -451,7 +507,17 @@ export default function Preparativos() {
                 >
                   <FontAwesomeIcon icon={faPlus} />
                 </button>
+                {/* Botão de importar bloco */}
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  title="Importar grupo de passos"
+                  style={{ minWidth: 36 }}
+                  onClick={() => setModalImportarGrupoPrep(prep.id)}
+                >
+                  <FontAwesomeIcon icon={faToolbox} />
+                </button>
               </div>
+
               {/* Drag and Drop context para passos */}
               <DndContext
                 sensors={sensors}
@@ -500,6 +566,28 @@ export default function Preparativos() {
           )}
         </div>
       ))}
+
+      <ImportarBlocoModal
+        aberto={!!modalImportarGrupoPrep}
+        onClose={() => setModalImportarGrupoPrep(null)}
+        onImportar={(bloco) => {
+          // Adiciona passos no preparativo correto
+          if (!modalImportarGrupoPrep) return;
+          const lista = [...template.preparativos];
+          const prep = lista.find(
+            (p: Preparativo) => p.id === modalImportarGrupoPrep
+          );
+          if (!prep) return;
+          // Cria passos com ID único
+          const novos = bloco.passos.map((p) => ({
+            id: uuid(),
+            texto: p.texto,
+          }));
+          prep.passos.push(...novos);
+          setTemplate({ ...template, preparativos: lista });
+          setModalImportarGrupoPrep(null);
+        }}
+      />
     </div>
   );
 }

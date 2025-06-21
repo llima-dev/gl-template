@@ -18,7 +18,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { useTemplateStore } from "../context/TemplateContext";
 import type { Passo } from "../types";
 import EditarPassoModal from "./EditarPassoModal";
-import { smartReplace } from '../helpers';
+import { useAutoCompleteShortcuts } from '../hooks/useAutoCompleteShortcuts';
+import ImportarBlocoModal from "./ImportarBlocoModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,6 +29,7 @@ import {
   faListOl,
   faPlus,
   faMinus,
+  faToolbox,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./Passos.css";
@@ -123,6 +125,19 @@ export default function Passos() {
   const [modalAberta, setModalAberta] = useState(false);
   const [passoSelecionado, setPassoSelecionado] = useState<string | null>(null);
   const [novoPasso, setNovoPasso] = useState("");
+  const [modalImportarGrupo, setModalImportarGrupo] = useState(false);
+
+  const {
+    visivel,
+    idx,
+    shortcutsFiltrados,
+    setIdx,
+    inserirShortcutSelecionado,
+    handleInputChange,
+    handleInputKeyDown,
+    setVisivel,
+    inputRef,
+  } = useAutoCompleteShortcuts(novoPasso, setNovoPasso, adicionarPasso);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -175,22 +190,67 @@ export default function Passos() {
       </label>
 
       {/* Campo de adição de passo */}
-      <div className="input-group mb-2">
+      <div className="input-group mb-2 mt-5" style={{ position: "relative" }}>
         <input
           type="text"
           className="form-control"
-          placeholder="Descreva o passo e pressione Enter"
+          ref={inputRef}
           value={novoPasso}
-          onChange={(e) => setNovoPasso(smartReplace(e.target.value))}
-          onKeyDown={(e) => e.key === "Enter" && adicionarPasso()}
+          placeholder="Descreva o passo e pressione Enter"
+          onChange={(e) => handleInputChange(e.target.value)}
+          onKeyDown={handleInputKeyDown}
+          onBlur={() => setTimeout(() => setVisivel(false), 200)}
+          style={{ zIndex: 2 }} // só pra garantir o focus
         />
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-outline-primary px-3"
           type="button"
           onClick={() => adicionarPasso()}
+          style={{ minWidth: 40 }} // garante largura padrão
         >
           <FontAwesomeIcon icon={faPlus} />
         </button>
+        <button
+          className="btn btn-outline-secondary px-2"
+          type="button"
+          title="Importar grupo de passos"
+          onClick={() => setModalImportarGrupo(true)}
+        >
+          <FontAwesomeIcon icon={faToolbox} />
+        </button>
+        {/* Dropdown de autocomplete ABSOLUTO, ocupando o espaço do input */}
+        {visivel && shortcutsFiltrados.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              top: "100%",
+              width: "calc(100% - 40px)", // tira o espaço do botão
+              background: "#fff",
+              border: "1px solid #ccc",
+              maxHeight: 200,
+              overflowY: "auto",
+              zIndex: 100,
+            }}
+          >
+            {shortcutsFiltrados.map((s, i) => (
+              <div
+                key={s.id}
+                style={{
+                  padding: 8,
+                  cursor: "pointer",
+                  background: i === idx ? "#e0e0e0" : "#fff",
+                  fontWeight: i === idx ? "bold" : "normal",
+                }}
+                onMouseDown={() => inserirShortcutSelecionado(i)}
+                onMouseEnter={() => setIdx(i)}
+              >
+                ({s.id}) - {s.name}{" "}
+                <span className="float-end text-muted">{s.categoria}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Botão para divisória */}
@@ -202,6 +262,27 @@ export default function Passos() {
           <FontAwesomeIcon icon={faMinus} className="me-1" /> Divisória
         </button>
       </div>
+
+      <ImportarBlocoModal
+        aberto={modalImportarGrupo}
+        onClose={() => setModalImportarGrupo(false)}
+        onImportar={(bloco) => {
+          const novos = bloco.passos.map((p) => ({
+            id: crypto.randomUUID
+              ? crypto.randomUUID()
+              : Math.random().toString(),
+            texto: p.texto,
+            critico: false,
+            criteriosVinculados: [],
+            isDivisoria: false,
+          }));
+          setTemplate({
+            ...template,
+            passos: [...template.passos, ...novos],
+          });
+          setModalImportarGrupo(false);
+        }}
+      />
 
       {/* Lista de passos com ordenação */}
       <DndContext

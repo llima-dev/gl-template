@@ -71,20 +71,6 @@ export default function EditarPassoModal({ id, onClose }: Props) {
               />
             </div>
 
-            <div className="form-check form-switch mb-3">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="criticoCheck"
-                checked={critico}
-                onChange={(e) => setCritico(e.target.checked)}
-                style={{ cursor: "pointer" }}
-              />
-              <label className="form-check-label" htmlFor="criticoCheck">
-                Marcar como crítico
-              </label>
-            </div>
-
             <div className="mb-2">
               <label className="form-label mb-1">Vincular Critérios:</label>
               <div className="d-flex flex-wrap gap-2">

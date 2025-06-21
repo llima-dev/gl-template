@@ -49,43 +49,64 @@ export default function Criterios() {
           onChange={(e) => setNovoCriterio(smartReplace(e.target.value))}
           onKeyDown={(e) => e.key === "Enter" && adicionar()}
         />
-        <button className="btn btn-outline-secondary" type="button" onClick={adicionar}>
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          onClick={adicionar}
+        >
           <i className="fas fa-plus"></i>
         </button>
       </div>
 
       <ul className="list-group">
-        {template.criterios.map((criterio, index) => (
-          <li className="list-group-item d-flex justify-content-between align-items-center" key={index}>
-            {editandoIndex === index ? (
-              <input
-                type="text"
-                className="form-control me-2"
-                value={textoEdicao}
-                onChange={(e) => setTextoEdicao(smartReplace(e.target.value))}
-                onBlur={() => salvarEdicao(index)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") salvarEdicao(index);
-                }}
-                autoFocus
-              />
-            ) : (
-              <span
-                onClick={() => {
-                  setEditandoIndex(index);
-                  setTextoEdicao(criterio);
-                }}
-                style={{ cursor: "pointer" }}
+        <ul className="list-group">
+          {template.criterios.map((criterio, index) => (
+            <li
+              className="list-group-item d-flex justify-content-between align-items-center"
+              key={index}
+            >
+              <div className="d-flex align-items-center flex-grow-1">
+                <span
+                  className="me-2 text-secondary fw-bold"
+                  style={{ minWidth: 22 }}
+                >
+                  {index + 1}.
+                </span>
+                {editandoIndex === index ? (
+                  <input
+                    type="text"
+                    className="form-control me-2"
+                    value={textoEdicao}
+                    onChange={(e) =>
+                      setTextoEdicao(smartReplace(e.target.value))
+                    }
+                    onBlur={() => salvarEdicao(index)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") salvarEdicao(index);
+                    }}
+                    autoFocus
+                  />
+                ) : (
+                  <span
+                    onClick={() => {
+                      setEditandoIndex(index);
+                      setTextoEdicao(criterio);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {criterio}
+                  </span>
+                )}
+              </div>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => remover(index)}
               >
-                {criterio}
-              </span>
-            )}
-
-            <button className="btn btn-sm btn-outline-danger" onClick={() => remover(index)}>
-              <i className="fas fa-trash-alt"></i>
-            </button>
-          </li>
-        ))}
+                <i className="fas fa-trash-alt"></i>
+              </button>
+            </li>
+          ))}
+        </ul>
       </ul>
     </div>
   );
