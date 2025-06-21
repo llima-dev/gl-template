@@ -12,6 +12,8 @@ import Preparativos from "./components/Preparativos";
 import ToolbarFlutuante from "./components/ToolbarFlutuante";
 import MarkdownPreview from "./components/MarkdownPreview";
 
+import "./App.css"
+
 import { gerarMarkdown } from "./helpers";
 
 export default function App() {
@@ -25,15 +27,12 @@ export default function App() {
 
   return (
     <div className="d-flex justify-content-center align-items-start min-vh-100 bg-light">
-      <div
-        className="mx-auto px-3"
-        style={{ maxWidth: "85%", width: "100%" }}
-      >
+      <div className="mx-auto px-3" style={{ maxWidth: "100%", width: "100%" }}>
         <div className="card shadow-sm card-content">
           <div className="card-body">
-            <div className="row">
-              {/* Lado ESQUERDO: todo o conteúdo editável */}
-              <div className="col-12 col-lg-7">
+            <div className="row" style={{ height: "80vh" }}>
+              {/* Lado ESQUERDO: conteúdo editável com scroll */}
+              <div className="col-12 col-lg-7 col-scroll">
                 <h1 className="h4">
                   Gerador de Template GitLab
                   {template.nomeTarefa && (
@@ -74,8 +73,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Lado DIREITO: Preview ao vivo */}
-              <div className="col-12 col-lg-5">
+              {/* Lado DIREITO: Preview ao vivo com scroll */}
+              <div className="col-12 col-lg-5 col-scroll">
                 <label className="form-label fw-bold">Preview ao vivo</label>
                 <div
                   style={{

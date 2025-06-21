@@ -82,12 +82,27 @@ export default function ToolbarFlutuante() {
     const novosArquivados = [...template.arquivados];
     const desarquivado = novosArquivados.splice(idx, 1)[0];
 
+    // Arquiva o template atual ANTES de trocar
+    const templateAtualArquivado = { ...template };
+    delete templateAtualArquivado.arquivados;
+
+    // Coloca o atual no começo da lista
+    novosArquivados.unshift(templateAtualArquivado);
+
     setTemplate({
       ...desarquivado,
       arquivados: novosArquivados,
     });
 
     setMostrarArquivados(false);
+
+    Swal.fire({
+      title: "Template alternado!",
+      text: "O template anterior foi arquivado automaticamente.",
+      icon: "info",
+      timer: 1800,
+      showConfirmButton: false,
+    });
   }
 
   function removerArquivado(idx: number) {
