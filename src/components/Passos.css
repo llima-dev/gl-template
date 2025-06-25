@@ -5,3 +5,20 @@
 .btn-sm {
     border: none !important;
 }
+
+.mermaid {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.mermaid svg {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  display: block;
+}

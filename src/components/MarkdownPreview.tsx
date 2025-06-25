@@ -5,6 +5,8 @@ import rehypeRaw from "rehype-raw";
 import "highlight.js/styles/github-dark.css";
 import { substituirShortcodesPorEmojis } from "../helpers";
 
+import "./MarkdownPreview.css";
+
 type MarkdownPreviewProps = {
   markdown: string;
   style?: React.CSSProperties;

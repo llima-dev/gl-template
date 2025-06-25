@@ -1,6 +1,8 @@
 import { STORAGE_KEY } from './consts';
 import type { Template, BlocoCodigo, Preparativo, Passo } from "./types";
 import Swal from "sweetalert2";
+import pako from "pako";
+
 import "sweetalert2/dist/sweetalert2.min.css";
 
 export function gerarIdTemplate(): string {
@@ -68,6 +70,18 @@ function checkmark(cond: boolean) {
   return cond ? "[X]" : "[ ]";
 }
 
+function gerarKrokiUrl(mermaid: string) {
+  // Compacta e converte para base64 url-safe, conforme Kroki recomenda
+  const deflated = pako.deflate(mermaid, { level: 9 });
+  const b64 = btoa(String.fromCharCode(...new Uint8Array(deflated)))
+    .replace(/\+/g, '-').replace(/\//g, '_');
+  return `https://kroki.io/mermaid/svg/${b64}`;
+}
+
+function negritarParenteses(texto: string): string {
+  return texto.replace(/\(([^)]+)\)/g, '(**$1**)');
+}
+
 export function gerarMarkdown(template: Template): string {
   let md = "";
 
@@ -103,12 +117,10 @@ export function gerarMarkdown(template: Template): string {
 
   // PREPARATIVOS
   if (template.preparativos?.length) {
-    template.preparativos.forEach((prep: Preparativo, idx: number) => {
-      md += `### :rosette: Preparativo ${idx + 1} (**${escaparUnderscores(
-        prep.titulo
-      )}**)\n`;
+    template.preparativos.forEach((prep: Preparativo) => {
+      md += `### :rosette: ${escaparUnderscores(prep.titulo)} \n`;
       prep.passos.forEach((passo, i) => {
-        md += `${i + 1}. ${escaparUnderscores(passo.texto)}\n`;
+        md += `${i + 1}. ${negritarParenteses(escaparUnderscores(passo.texto))}\n`;
       });
       md += `\n____\n`;
     });
@@ -118,12 +130,16 @@ export function gerarMarkdown(template: Template): string {
   if (template.passos?.length) {
     md += `### :mans_shoe: Passos\n\n`;
     let n = 1; // contador real de passos
+    let etapaContador = 1; // contador de etapas/divisórias
+
     template.passos.forEach((passo: Passo) => {
       if (passo.isDivisoria) {
-        // Renderize como divisória (ex: --- Etapa 1 ---)
-        md += `\n ${escaparUnderscores(passo.texto)} \n\n`;
+        // Substitui pelo formato --- 1ª Etapa ---
+        const sufixo = "ª";
+        md += `\n--- ${etapaContador}${sufixo} Etapa ---\n\n`;
+        etapaContador++;
       } else {
-        let linha = `${n}. ${escaparUnderscores(passo.texto)}`;
+        let linha = `${n}. ${negritarParenteses(escaparUnderscores(passo.texto))}`;
         if (passo.criteriosVinculados && passo.criteriosVinculados.length > 0) {
           const nums = passo.criteriosVinculados
             .map((idx) => (typeof idx === "number" ? idx + 1 : Number(idx) + 1))
@@ -136,6 +152,17 @@ export function gerarMarkdown(template: Template): string {
       }
     });
     md += `\n____\n`;
+
+    const diagramaMermaid = gerarFluxogramaMermaid(template);
+
+    if (
+      diagramaMermaid &&
+      template.nomeTarefa &&
+      template.disponibilizarFluxograma
+    ) {
+      const krokiUrl = gerarKrokiUrl(diagramaMermaid);
+      md += `\n> [Visualizar fluxograma do teste](${krokiUrl})\n\n`;
+    }
   }
 
   // CRITÉRIOS
@@ -291,3 +318,55 @@ export const SHORTCUTS_BLOCOS = [
     ]
   },
 ];
+
+export function gerarFluxogramaMermaid(template: Template) {
+  let diagrama = 'flowchart LR\n';
+  diagrama += `A[Tarefa: ${template.nomeTarefa || 'Sem nome'}]:::etapa\n`;
+  diagrama += `A --> PX[Passos de Teste]:::etapa\n`;
+
+  let passoNumero = 1;
+  let prev = 'PX';
+  let etapaContador = 1;
+
+  template.passos.forEach((p: Passo, idx: number) => {
+    if (!p.texto || typeof p.texto !== "string") return;
+
+    const textoLimpo = p.texto.trim();
+
+    if (p.isDivisoria) {
+      // Numera a etapa conforme a ordem das divisórias
+      const eid = `E${etapaContador}`;
+
+      const sufixo = etapaContador === 1 ? "ª" : "ª";
+      const nomeEtapa = `${etapaContador}${sufixo} Etapa`;
+      diagrama += `${prev} --> ${eid}["${nomeEtapa}"]:::etapa\n`;
+      prev = eid;
+      etapaContador++;
+      return;
+    }
+
+    const id = `S${idx}`;
+    const texto = `${passoNumero++} - ${textoLimpo}`; // pode sanitizar se quiser
+    const critico = Array.isArray(p.criteriosVinculados) && p.criteriosVinculados.length > 1;
+    const classe = critico ? 'critico' : 'passo';
+
+    diagrama += `${prev} --> ${id}["${texto}"]:::${classe}\n`;
+    prev = id;
+
+    if (Array.isArray(p.criteriosVinculados)) {
+      p.criteriosVinculados.forEach((criterioIdx: number, j: number) => {
+        const cid = `C_${idx}_${j}`;
+        const textoCrit = template.criterios[criterioIdx] || `Critério ${criterioIdx + 1}`;
+        diagrama += `${id} -- critério --> ${cid}["${textoCrit}"]:::criterio\n`;
+      });
+    }
+  });
+
+  diagrama += `
+    classDef etapa fill:#fff3cd,stroke:#856404,stroke-width:2px,color:#000;
+    classDef passo fill:#b2ebf2,stroke:#00796b,color:#000;
+    classDef critico fill:#ef9a9a,stroke:#b71c1c,stroke-width:2px,color:#000;
+    classDef criterio fill:#e1bee7,stroke:#663399,color:#000;
+  `;
+  return diagrama;
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTemplateStore } from '../context/TemplateContext';
+import { smartReplace } from "../helpers";
 
 type Props = {
   id: string;
@@ -66,7 +67,7 @@ export default function EditarPassoModal({ id, onClose }: Props) {
                 className="form-control"
                 rows={2}
                 value={texto}
-                onChange={(e) => setTexto(e.target.value)}
+                onChange={(e) => setTexto(smartReplace(e.target.value))}
                 style={{ resize: "vertical" }}
               />
             </div>

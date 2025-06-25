@@ -20,6 +20,8 @@ import type { Passo } from "../types";
 import EditarPassoModal from "./EditarPassoModal";
 import { useAutoCompleteShortcuts } from '../hooks/useAutoCompleteShortcuts';
 import ImportarBlocoModal from "./ImportarBlocoModal";
+import ModalFluxograma from "./ModalFluxograma";
+import { gerarFluxogramaMermaid } from '../helpers';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -126,6 +128,7 @@ export default function Passos() {
   const [passoSelecionado, setPassoSelecionado] = useState<string | null>(null);
   const [novoPasso, setNovoPasso] = useState("");
   const [modalImportarGrupo, setModalImportarGrupo] = useState(false);
+  const [modalFluxoAberto, setModalFluxoAberto] = useState(false);
 
   const {
     visivel,
@@ -189,8 +192,40 @@ export default function Passos() {
         Passos de Execução
       </label>
 
+      {/* Checkbox e botão */}
+      <div className="d-flex align-items-center gap-3">
+        <div className="form-check">
+          <input
+            style={{ cursor: "pointer" }}
+            className="form-check-input"
+            type="checkbox"
+            id="check-fluxograma"
+            checked={!!template.disponibilizarFluxograma}
+            onChange={e => setTemplate({ ...template, disponibilizarFluxograma: e.target.checked })}
+          />
+          <label className="form-check-label" htmlFor="check-fluxograma" style={{ cursor: "pointer" }}>
+            Disponibilizar fluxograma
+          </label>
+        </div>
+        {template.disponibilizarFluxograma && (
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            onClick={() => setModalFluxoAberto(true)}
+          >
+            <i className="fas fa-project-diagram me-2" />
+            Visualizar fluxograma
+          </button>
+        )}
+      </div>
+
+      <ModalFluxograma
+        aberto={modalFluxoAberto}
+        onClose={() => setModalFluxoAberto(false)}
+        diagrama={gerarFluxogramaMermaid(template)}
+      />
+
       {/* Campo de adição de passo */}
-      <div className="input-group mb-2 mt-5" style={{ position: "relative" }}>
+      <div className="input-group mb-2 mt-2" style={{ position: "relative" }}>
         <input
           type="text"
           className="form-control"

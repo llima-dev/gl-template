@@ -48,4 +48,5 @@ export type Template = {
   };
   incluirFluxograma: boolean;
   arquivados?: Template[];
+  disponibilizarFluxograma?: boolean;
 };
