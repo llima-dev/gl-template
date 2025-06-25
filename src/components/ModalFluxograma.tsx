@@ -44,7 +44,7 @@ export default function ModalFluxograma({ aberto, onClose, diagrama }: Props) {
     <div
       className="modal show d-block"
       tabIndex={-1}
-      style={{ background: "#0009" }}
+      style={{ background: "#0009", cursor: "grab" }}
     >
       <div className="modal-dialog modal-xl modal-dialog-centered">
         <div className="modal-content">

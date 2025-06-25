@@ -207,15 +207,6 @@ export default function Passos() {
             Disponibilizar fluxograma
           </label>
         </div>
-        {template.disponibilizarFluxograma && (
-          <button
-            className="btn btn-outline-secondary btn-sm"
-            onClick={() => setModalFluxoAberto(true)}
-          >
-            <i className="fas fa-project-diagram me-2" />
-            Visualizar fluxograma
-          </button>
-        )}
       </div>
 
       <ModalFluxograma
