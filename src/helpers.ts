@@ -82,12 +82,13 @@ function negritarParenteses(texto: string): string {
   return texto.replace(/\(([^)]+)\)/g, '(**$1**)');
 }
 
-export function gerarMarkdown(template: Template): string {
+export function gerarMarkdown(template: Template, isPreview: boolean = false): string {
   let md = "";
 
   // NOME DA TAREFA
   if (template.nomeTarefa) {
     md += `# ${escaparUnderscores(template.nomeTarefa)}\n\n`;
+    if (isPreview) md += '\n____\n';
   }
 
   // ESCOPO

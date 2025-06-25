@@ -88,7 +88,7 @@ export default function App() {
                     overflow: "auto",
                   }}
                 >
-                  <MarkdownPreview markdown={template.nomeTarefa ? gerarMarkdown(template) : ''} />
+                  <MarkdownPreview markdown={template.nomeTarefa ? gerarMarkdown(template, true) : ''} />
                 </div>
               </div>
             </div>

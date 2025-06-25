@@ -56,7 +56,11 @@
 }
 
 .markdown-preview hr {
-  border: 0;
-  border-top: 1px solid #eee;
-  margin: 2em 0;
+  border: none !important;
+  border-top: 1.5px solid #c5c5c5 !important; /* cor chamativa pra testar */
+  margin: 1em 0 !important;
+  height: 0 !important;
+  background: none !important;
+  opacity: 1 !important;
+  display: block !important;
 }
