@@ -72,24 +72,41 @@ function SortableItem({
 
       {/* Conteúdo principal */}
       <div className="flex-grow-1 d-flex flex-wrap align-items-center gap-2">
-        <span className="fw-semibold passo-title">{passo.texto || "(Sem texto)"}</span>
+        <span className="fw-semibold passo-title">
+          {passo.texto || "(Sem texto)"}
+        </span>
 
-        {passo.criteriosVinculados?.map((idx) => (
-          <span
-            key={idx}
-            className="badge rounded-pill bg-warning text-dark small"
-            style={{ fontSize: "0.75rem", padding: "0.3em 0.6em" }}
-          >
-            {template.criterios[idx] ?? `Critério ${idx}`}
-          </span>
-        ))}
+        {[...(passo.criteriosVinculados || [])]
+          .filter(idx => template.criterios[idx] !== undefined)
+          .sort((a, b) => a - b)
+          .map((idx) => (
+            <span
+              key={idx}
+              className="badge rounded-pill bg-warning text-dark small"
+              style={{
+                fontSize: "0.75rem",
+                padding: "0.3em 0.6em",
+                maxWidth: 120,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                display: "inline-block",
+                verticalAlign: "middle",
+              }}
+              title={`${idx + 1}. ${
+                template.criterios[idx] ?? `Critério ${idx + 1}`
+              }`}
+            >
+              {`${idx + 1}. ${
+                template.criterios[idx] ?? `Critério ${idx + 1}`
+              }`}
+            </span>
+          ))}
       </div>
 
       {/* Ações (à direita) */}
       <div className="d-flex align-items-center gap-2">
-        {passo.critico && (
-          <span className="badge bg-danger">Crítico</span>
-        )}
+        {passo.critico && <span className="badge bg-danger">Crítico</span>}
 
         {!passo.isDivisoria && (
           <button

@@ -80,12 +80,12 @@ export default function EditarPassoModal({ id, onClose }: Props) {
                     key={idx}
                     type="button"
                     className={`btn btn-sm px-3 py-1 rounded-pill 
-                      ${vinculados.includes(idx) ? "btn-warning" : "btn-outline-secondary"}
-                    `}
+      ${vinculados.includes(idx) ? "btn-warning" : "btn-outline-secondary"}
+    `}
                     style={{ userSelect: "none" }}
                     onClick={() => toggleCriterio(idx)}
                   >
-                    {criterio}
+                    {`${idx + 1}. ${criterio}`}
                   </button>
                 ))}
               </div>
