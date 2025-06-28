@@ -146,7 +146,8 @@ export function gerarMarkdown(template: Template, isPreview: boolean = false): s
             .map((idx) => (typeof idx === "number" ? idx + 1 : Number(idx) + 1))
             .sort((a, b) => a - b)
             .join(",");
-          linha += ` :warning: (${nums})`;
+          const isAutoCritico = passo.criteriosVinculados.length > 2;
+          linha += ` :warning: (${nums})${isAutoCritico ? " `CRÍTICO`" : ""}`;
         }
         md += linha + "\n";
         n++; // só incrementa se não for divisória!
