@@ -50,3 +50,19 @@ export type Template = {
   arquivados?: Template[];
   disponibilizarFluxograma?: boolean;
 };
+
+export type TemplateKanban = {
+  descricaoProblema: string;
+  passos: PassoKanban[];
+  resultadoEsperado: string;
+  resultadoObtido: string;
+  analiseExtra: string;
+  implementacao?: string;
+  detalhamento?: string;
+};
+
+export type PassoKanban = {
+  id: string;
+  texto: string;
+  isDivisoria?: boolean;
+};

@@ -1,5 +1,5 @@
 import { STORAGE_KEY } from './consts';
-import type { Template, BlocoCodigo, Preparativo, Passo } from "./types";
+import type { Template, BlocoCodigo, Preparativo, Passo, TemplateKanban } from "./types";
 import Swal from "sweetalert2";
 import pako from "pako";
 
@@ -371,4 +371,42 @@ export function gerarFluxogramaMermaid(template: Template) {
     classDef criterio fill:#e1bee7,stroke:#663399,color:#000;
   `;
   return diagrama;
+}
+
+export function gerarTextoKanban(kanban: TemplateKanban, isBug: boolean): string {
+  let passoNum = 1;
+  let etapaNum = 1;
+  const lista = (kanban.passos || [])
+    .map(p => p.isDivisoria
+      ? `- ${etapaNum++}ª Etapa ---`
+      : `${passoNum++}. ${p.texto}`
+    )
+    .join('\n');
+
+  if (isBug) {
+    return [
+      "🟦 DESCRIÇÃO DO PROBLEMA",
+      kanban.descricaoProblema || "-",
+      "",
+      "🟧 COMO REPRODUZIR (PASSO A PASSO)",
+      lista || "-",
+      "",
+      "🟩 RESULTADO ESPERADO",
+      kanban.resultadoEsperado || "-",
+      "",
+      "🟥 RESULTADO OBTIDO",
+      kanban.resultadoObtido || "-",
+      "",
+      "🟪 ANÁLISE EXTRA",
+      kanban.analiseExtra || "-",
+    ].join('\n');
+  } else {
+    return [
+      "🟦 IMPLEMENTAÇÃO",
+      kanban.implementacao || "-",
+      "",
+      "🟪 DETALHAMENTO",
+      kanban.detalhamento || "-",
+    ].join('\n');
+  }
 }
