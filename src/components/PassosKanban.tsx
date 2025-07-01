@@ -18,6 +18,7 @@ import { useKanbanTemplateStore } from "../context/KanbanTemplateContext";
 import type { PassoKanban } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { smartReplace } from "../helpers";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   faGripLines,
   faPen,
@@ -26,6 +27,11 @@ import {
   faPlus,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
+
+type ModalEditarPassoProps = {
+  id: string;
+  onClose: () => void;
+};
 
 function SortableItem({
   passo,
@@ -93,7 +99,7 @@ export default function PassosKanban() {
 
   const sensors = useSensors(useSensor(PointerSensor));
 
-  function onDragEnd(event) {
+  function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -128,7 +134,7 @@ export default function PassosKanban() {
   }
 
   // Modal de edição simples
-  function ModalEditarPasso({ id, onClose }) {
+  function ModalEditarPasso({ id, onClose }: ModalEditarPassoProps) {
     const passo = kanban.passos.find((p) => p.id === id);
     const [texto, setTexto] = useState(passo?.texto || "");
     if (!passo) return null;
