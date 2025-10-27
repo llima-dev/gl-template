@@ -11,6 +11,8 @@ import Comentario from "./components/Comentario";
 import Preparativos from "./components/Preparativos";
 import ToolbarFlutuante from "./components/ToolbarFlutuante";
 import MarkdownPreview from "./components/MarkdownPreview";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
 import { KanbanTemplateProvider } from "./context/KanbanTemplateContext";
 import FormKanban from "./components/FormKanban";
@@ -20,7 +22,7 @@ import "./App.css"
 import { gerarMarkdown } from "./helpers";
 
 export default function App() {
-  const { template } = useTemplateStore();
+  const { template, limparCampos } = useTemplateStore();
   const [aba, setAba] = useState<"gitlab" | "kanban">("gitlab");
 
   useEffect(() => {
@@ -62,17 +64,27 @@ export default function App() {
               <div className="row" style={{ height: "80vh" }}>
                 {/* Lado ESQUERDO: conteúdo editável com scroll */}
                 <div className="col-12 col-lg-7 col-scroll">
-                  <h1 className="h4">
-                    Gerador de Template GitLab
-                    {template.nomeTarefa && (
-                      <span
-                        className="ms-2 text-muted"
-                        style={{ fontWeight: 400 }}
-                      >
-                        ({template.nomeTarefa})
-                      </span>
-                    )}
-                  </h1>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <h1 className="h4" style={{ maxWidth: '60vw' }}>
+                      Gerador de Template GitLab
+                      {template.nomeTarefa && (
+                        <span
+                          className="ms-2 text-muted"
+                          style={{ fontWeight: 400 }}
+                        >
+                          ({template.nomeTarefa})
+                        </span>
+                      )}
+                    </h1>
+                    <button
+                      className="btn btn-outline-danger btn-sm kanban-toolbar-btn"
+                      type="button"
+                      onClick={limparCampos}
+                      title="Limpar formulário"
+                    >
+                      <FontAwesomeIcon icon={faBroom} />
+                    </button>
+                  </div>
                   <CamposBasicos />
                   <Comentario />
                   <hr className="my-4" />

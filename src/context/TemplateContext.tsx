@@ -35,6 +35,7 @@ const TemplateContext = createContext<
       template: Template;
       setTemplate: (t: Template) => void;
       limpar: () => void;
+      limparCampos: () => void;
     }
   | undefined
 >(undefined);
@@ -54,8 +55,33 @@ export function TemplateProvider({ children }: { children: ReactNode }) {
     setTemplate(modeloVazio);
   }
 
+  function limparCampos() {
+    // Limpa os campos da aba do gitlab
+    setTemplate((prev) => ({
+      ...prev,
+      nomeTarefa: "",
+      escopo: "",
+      impacto: "",
+      criterios: [],
+      passos: [],
+      preparativos: [],
+      blocosDeCodigo: [],
+      comentariosAtencao: [],
+      linksExternos: [],
+      navegadores: { chrome: false, edge: false },
+      bancos: {
+        sqlserver: false,
+        oracleIso: false,
+        postgres: false,
+        oracleUtf: false,
+      },
+      incluirFluxograma: false,
+      arquivados: []
+    }));
+  }
+
   return (
-    <TemplateContext.Provider value={{ template, setTemplate, limpar }}>
+    <TemplateContext.Provider value={{ template, setTemplate, limpar, limparCampos }}>
       {children}
     </TemplateContext.Provider>
   );
