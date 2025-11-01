@@ -61,7 +61,8 @@ export default function App() {
         {aba === "gitlab" ? (
           <div className="card shadow-sm card-content">
             <div className="card-body">
-              <h4 className="h4">
+              <div className="d-flex justify-content-between">
+              <h4 className="h4 mt-2">
                 <small className="text-muted">
                   {template.nomeTarefa
                     ? template.nomeTarefa
@@ -69,6 +70,7 @@ export default function App() {
                 </small>
               </h4>
               <ToolbarSuperior />
+              </div>
               <hr />
               <div className="row" style={{ height: "80vh" }}>
                 {/* Lado ESQUERDO: conteúdo editável com scroll */}
