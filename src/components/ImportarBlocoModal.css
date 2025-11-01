@@ -94,3 +94,54 @@
 .importar-bloco-body .btn-primary:hover {
   background: #2470b9;
 }
+
+.modal.importar-blocos .modal-dialog {
+  max-width: 800px;
+}
+
+.modal.importar-blocos .modal-content {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal.importar-blocos .modal-body {
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+}
+
+/* Estilo dos cards colapsáveis */
+.bloco-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.bloco-header {
+  background: #f8f9fa;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.bloco-header:hover {
+  background: #eef2f4;
+}
+
+.bloco-body {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.bloco-body ul {
+  margin-bottom: 0;
+}
+
+.bloco-ativo .bloco-header {
+  background: #eaf2ff;
+  border-left: 3px solid #0d6efd;
+}

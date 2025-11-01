@@ -570,19 +570,18 @@ export default function Preparativos() {
       <ImportarBlocoModal
         aberto={!!modalImportarGrupoPrep}
         onClose={() => setModalImportarGrupoPrep(null)}
-        onImportar={(bloco) => {
-          // Adiciona passos no preparativo correto
+        onImportar={(passos) => {
           if (!modalImportarGrupoPrep) return;
+
           const lista = [...template.preparativos];
-          const prep = lista.find(
-            (p: Preparativo) => p.id === modalImportarGrupoPrep
-          );
+          const prep = lista.find((p) => p.id === modalImportarGrupoPrep);
           if (!prep) return;
-          // Cria passos com ID único
-          const novos = bloco.passos.map((p) => ({
+
+          const novos = passos.map((p) => ({
             id: uuid(),
             texto: p.texto,
           }));
+
           prep.passos.push(...novos);
           setTemplate({ ...template, preparativos: lista });
           setModalImportarGrupoPrep(null);

@@ -218,9 +218,18 @@ export default function Passos() {
             type="checkbox"
             id="check-fluxograma"
             checked={!!template.disponibilizarFluxograma}
-            onChange={e => setTemplate({ ...template, disponibilizarFluxograma: e.target.checked })}
+            onChange={(e) =>
+              setTemplate({
+                ...template,
+                disponibilizarFluxograma: e.target.checked,
+              })
+            }
           />
-          <label className="form-check-label" htmlFor="check-fluxograma" style={{ cursor: "pointer" }}>
+          <label
+            className="form-check-label"
+            htmlFor="check-fluxograma"
+            style={{ cursor: "pointer" }}
+          >
             Disponibilizar fluxograma
           </label>
         </div>
@@ -309,11 +318,9 @@ export default function Passos() {
       <ImportarBlocoModal
         aberto={modalImportarGrupo}
         onClose={() => setModalImportarGrupo(false)}
-        onImportar={(bloco) => {
-          const novos = bloco.passos.map((p) => ({
-            id: crypto.randomUUID
-              ? crypto.randomUUID()
-              : Math.random().toString(),
+        onImportar={(passos) => {
+          const novos = passos.map((p) => ({
+            id: crypto.randomUUID(),
             texto: p.texto,
             critico: false,
             criteriosVinculados: [],
