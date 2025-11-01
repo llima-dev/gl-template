@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { SHORTCUTS_BLOCOS } from "../helpers";
 import { useCustomBlocos } from "../hooks/useCustomBlocos";
 import NovoBlocoModal from "./NovoBlocoModal";

@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import type { GridRowSelectionModel } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
@@ -85,11 +84,6 @@ export default function ArquivadosTable({
       <DataGrid
         rows={rows}
         columns={columns}
-        onRowSelectionModelChange={(selection: GridRowSelectionModel | any) => {
-          const raw = (selection as any)?.ids ?? selection;
-          const arr = Array.from(raw as unknown as Iterable<string | number>);
-          setSelecionados(arr.map((id) => Number(id)));
-        }}
         pageSizeOptions={[5, 10]}
         initialState={{
           pagination: { paginationModel: { pageSize: 5, page: 0 } },
