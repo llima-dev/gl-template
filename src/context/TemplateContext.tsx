@@ -50,8 +50,10 @@ export function TemplateProvider({ children }: { children: ReactNode }) {
   }, [template]);
 
   function limpar() {
-    localStorage.removeItem(STORAGE_KEY);
-    setTemplate(modeloVazio);
+    setTemplate((prev) => ({
+      ...modeloVazio,
+      arquivados: prev.arquivados ?? [],
+    }));
   }
 
   return (

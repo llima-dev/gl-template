@@ -9,19 +9,21 @@ import Impacto from "./components/Impacto";
 import AmbienteTestado from "./components/AmbienteTestado";
 import Comentario from "./components/Comentario";
 import Preparativos from "./components/Preparativos";
-import ToolbarFlutuante from "./components/ToolbarFlutuante";
 import MarkdownPreview from "./components/MarkdownPreview";
+import ToolbarSuperior from "./components/ToolbarSuperior";
+import MarkdownViewerModal from "./components/MarkdownViewerModal";
 
 import { KanbanTemplateProvider } from "./context/KanbanTemplateContext";
 import FormKanban from "./components/FormKanban";
 
-import "./App.css"
+import "./App.css";
 
 import { gerarMarkdown } from "./helpers";
 
 export default function App() {
   const { template } = useTemplateStore();
   const [aba, setAba] = useState<"gitlab" | "kanban">("gitlab");
+  const [mostrarVisualizador, setMostrarVisualizador] = useState(false);
 
   useEffect(() => {
     document.title = template.nomeTarefa
@@ -59,20 +61,19 @@ export default function App() {
         {aba === "gitlab" ? (
           <div className="card shadow-sm card-content">
             <div className="card-body">
+              <h4 className="h4">
+                <small>Gerador de Template GitLab</small>
+                {template.nomeTarefa && (
+                  <span className="ms-2 text-muted" style={{ fontWeight: 400 }}>
+                    ({template.nomeTarefa})
+                  </span>
+                )}
+              </h4>
+              <ToolbarSuperior />
+              <hr />
               <div className="row" style={{ height: "80vh" }}>
                 {/* Lado ESQUERDO: conteúdo editável com scroll */}
                 <div className="col-12 col-lg-7 col-scroll">
-                  <h1 className="h4">
-                    Gerador de Template GitLab
-                    {template.nomeTarefa && (
-                      <span
-                        className="ms-2 text-muted"
-                        style={{ fontWeight: 400 }}
-                      >
-                        ({template.nomeTarefa})
-                      </span>
-                    )}
-                  </h1>
                   <CamposBasicos />
                   <Comentario />
                   <hr className="my-4" />
@@ -85,13 +86,22 @@ export default function App() {
                   <Impacto />
                   <hr className="my-4" />
                   <AmbienteTestado />
-                  <ToolbarFlutuante />
                   <div className="mt-4">
-                    <label className="form-label fw-bold">
-                      Markdown Gerado
-                    </label>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <label className="form-label fw-bold mb-0">
+                        Markdown Gerado
+                      </label>
+
+                      <button
+                        className="btn btn-sm btn-outline-secondary d-flex align-items-center"
+                        onClick={() => setMostrarVisualizador(true)}
+                      >
+                        <i className="fas fa-eye me-1"></i> Visualizar
+                      </button>
+                    </div>
+
                     <textarea
-                      className="form-control"
+                      className="form-control mt-2"
                       rows={12}
                       readOnly
                       style={{
@@ -101,6 +111,13 @@ export default function App() {
                       }}
                       value={gerarMarkdown(template)}
                     />
+
+                    {mostrarVisualizador && (
+                      <MarkdownViewerModal
+                        markdown={gerarMarkdown(template)}
+                        onClose={() => setMostrarVisualizador(false)}
+                      />
+                    )}
                   </div>
                 </div>
 
