@@ -109,7 +109,7 @@ export default function ToolbarSuperior() {
     <>
       {/* Toolbar compacta estilo Word */}
       <div
-        className="btn-group btn-group-sm shadow-sm border"
+        className="btn-group btn-group-sm shadow-sm"
         role="group"
         aria-label="Ações Template GitLab"
       >

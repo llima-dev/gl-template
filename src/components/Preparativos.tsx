@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import { useTemplateStore } from "../context/TemplateContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Passo, BlocoCodigo, Preparativo } from "../types";
-import { smartReplace } from '../helpers';
+import { smartReplace } from "../helpers";
 import ImportarBlocoModal from "./ImportarBlocoModal";
 import {
   faToolbox,
@@ -16,6 +16,7 @@ import {
   faEdit,
   faSave,
   faTimes,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 // @ts-expect-error erro de lib
@@ -58,7 +59,13 @@ type BlocoCodigoColapsavelProps = {
   onRemover: (id: string) => void;
 };
 
-function BlocoCodigoColapsavel({ bloco, onRemover, onSalvar }: BlocoCodigoColapsavelProps & { onSalvar: (id: string, novoCodigo: string) => void }) {
+function BlocoCodigoColapsavel({
+  bloco,
+  onRemover,
+  onSalvar,
+}: BlocoCodigoColapsavelProps & {
+  onSalvar: (id: string, novoCodigo: string) => void;
+}) {
   const [aberto, setAberto] = useState(false);
   const [editando, setEditando] = useState(false);
   const [codigo, setCodigo] = useState(bloco.codigo);
@@ -71,34 +78,67 @@ function BlocoCodigoColapsavel({ bloco, onRemover, onSalvar }: BlocoCodigoColaps
         onClick={() => setAberto((v) => !v)}
       >
         <div className="d-flex align-items-center flex-grow-1">
-          <FontAwesomeIcon icon={aberto ? faChevronDown : faChevronRight} className="me-2 text-secondary" />
-          <strong>{bloco.titulo || <span className="text-muted">Sem título</span>}</strong>
+          <FontAwesomeIcon
+            icon={aberto ? faChevronDown : faChevronRight}
+            className="me-2 text-secondary"
+          />
+          <strong>
+            {bloco.titulo || <span className="text-muted">Sem título</span>}
+          </strong>
           <span className="badge bg-secondary ms-3">{bloco.linguagem}</span>
         </div>
         {/* Ações */}
-        <div className="ms-2 d-flex align-items-center gap-2" onClick={e => e.stopPropagation()}>
+        <div
+          className="ms-2 d-flex align-items-center gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           {!editando && (
-            <button className="btn btn-sm btn-link text-primary" title="Editar código" onClick={() => setEditando(true)}>
+            <button
+              className="btn btn-sm btn-link text-primary"
+              title="Editar código"
+              onClick={() => setEditando(true)}
+            >
               <FontAwesomeIcon icon={faEdit} />
             </button>
           )}
           {editando && (
             <>
-              <button className="btn btn-sm btn-link text-success" title="Salvar edição" onClick={() => { onSalvar(bloco.id, codigo); setEditando(false); }}>
+              <button
+                className="btn btn-sm btn-link text-success"
+                title="Salvar edição"
+                onClick={() => {
+                  onSalvar(bloco.id, codigo);
+                  setEditando(false);
+                }}
+              >
                 <FontAwesomeIcon icon={faSave} />
               </button>
-              <button className="btn btn-sm btn-link text-danger" title="Cancelar edição" onClick={() => { setCodigo(bloco.codigo); setEditando(false); }}>
+              <button
+                className="btn btn-sm btn-link text-danger"
+                title="Cancelar edição"
+                onClick={() => {
+                  setCodigo(bloco.codigo);
+                  setEditando(false);
+                }}
+              >
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </>
           )}
-          <button className="btn btn-sm btn-link text-danger" title="Remover bloco" onClick={() => onRemover(bloco.id)}>
+          <button
+            className="btn btn-sm btn-link text-danger"
+            title="Remover bloco"
+            onClick={() => onRemover(bloco.id)}
+          >
             <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
       </div>
       {aberto && (
-        <div className="card-body p-2" style={{ background: "#181c20", borderRadius: "0 0 8px 8px" }}>
+        <div
+          className="card-body p-2"
+          style={{ background: "#181c20", borderRadius: "0 0 8px 8px" }}
+        >
           <div style={{ maxHeight: 320, overflow: "auto" }}>
             {!editando ? (
               <SyntaxHighlighter
@@ -111,10 +151,14 @@ function BlocoCodigoColapsavel({ bloco, onRemover, onSalvar }: BlocoCodigoColaps
             ) : (
               <textarea
                 className="form-control font-monospace"
-                style={{ minHeight: 150, background: "#101318", color: "#d8dee9" }}
+                style={{
+                  minHeight: 150,
+                  background: "#101318",
+                  color: "#d8dee9",
+                }}
                 value={codigo}
                 autoFocus
-                onChange={e => setCodigo(e.target.value)}
+                onChange={(e) => setCodigo(e.target.value)}
               />
             )}
           </div>
@@ -212,7 +256,9 @@ function SortablePasso({
 }
 
 export default function Preparativos() {
-  const [modalImportarGrupoPrep, setModalImportarGrupoPrep] = useState<string | null>(null);
+  const [modalImportarGrupoPrep, setModalImportarGrupoPrep] = useState<
+    string | null
+  >(null);
   const [prepsAbertos, setPrepsAbertos] = useState<{ [id: string]: boolean }>(
     {}
   );
@@ -227,6 +273,7 @@ export default function Preparativos() {
   const [tituloBloco, setTituloBloco] = useState("");
   const [linguagem, setLinguagem] = useState("javascript");
   const [codigo, setCodigo] = useState("");
+  const [tituloEmEdicao, setTituloEmEdicao] = useState("");
 
   function salvarCodigoBloco(id: string, novoCodigo: string) {
     const novos = template.blocosDeCodigo.map((b) =>
@@ -438,34 +485,61 @@ export default function Preparativos() {
         <div key={prep.id} className="card mb-3 border rounded">
           <div className="card-header bg-light d-flex justify-content-between align-items-center">
             <div
-              className="d-flex align-items-center"
-              style={{ cursor: "pointer", userSelect: "none" }}
-              onClick={() => togglePrep(prep.id)}
+              className="d-flex align-items-center justify-content-between"
+              style={{ userSelect: "none" }}
             >
-              <FontAwesomeIcon
-                icon={prepsAbertos[prep.id] ? faChevronDown : faChevronRight}
-                className="me-2 text-secondary"
-              />
-              {editandoTitulo === prep.id ? (
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  defaultValue={prep.titulo}
-                  onBlur={(e) => {
-                    atualizarTitulo(prep.id, e.target.value);
-                    setEditandoTitulo(null);
-                  }}
-                  autoFocus
+              {/* Ícone colapsável */}
+              <div
+                onClick={() => togglePrep(prep.id)}
+                style={{ cursor: "pointer", width: "1.5rem" }}
+              >
+                <FontAwesomeIcon
+                  icon={prepsAbertos[prep.id] ? faChevronDown : faChevronRight}
+                  className="text-secondary"
                 />
-              ) : (
-                <strong
-                  className="text-dark"
-                  // Remova o onClick daqui!
-                >
-                  {prep.titulo}
-                </strong>
-              )}
+              </div>
+
+              {/* Título / Edição */}
+              <div className="flex-grow-1 ms-2">
+                {editandoTitulo === prep.id ? (
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    defaultValue={prep.titulo}
+                    autoFocus
+                    onChange={(e) => setTituloEmEdicao(e.target.value)}
+                    onBlur={(e) => {
+                      atualizarTitulo(prep.id, e.target.value);
+                      setEditandoTitulo(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        atualizarTitulo(prep.id, tituloEmEdicao);
+                        setEditandoTitulo(null);
+                      }
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
+                  />
+                ) : (
+                  <span>{prep.titulo}</span>
+                )}
+              </div>
+
+              {/* Botão editar */}
+              <button
+                className="btn btn-sm btn-outline-secondary ms-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditandoTitulo(prep.id);
+                }}
+                title="Editar título"
+              >
+                <FontAwesomeIcon icon={faPenToSquare} />
+              </button>
             </div>
+
             <button
               className="btn btn-sm btn-link text-danger"
               onClick={() => removerPreparativo(prep.id)}

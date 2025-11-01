@@ -88,7 +88,7 @@ export function gerarMarkdown(template: Template, isPreview: boolean = false): s
   // NOME DA TAREFA
   if (template.nomeTarefa) {
     md += `# ${escaparUnderscores(template.nomeTarefa)}\n\n`;
-    if (isPreview) md += '\n____\n';
+    if (isPreview) md += "\n____\n";
   }
 
   // ESCOPO
@@ -118,10 +118,16 @@ export function gerarMarkdown(template: Template, isPreview: boolean = false): s
 
   // PREPARATIVOS
   if (template.preparativos?.length) {
-    template.preparativos.forEach((prep: Preparativo) => {
-      md += `### :rosette: ${escaparUnderscores(prep.titulo)} \n`;
-      prep.passos.forEach((passo, i) => {
-        md += `${i + 1}. ${negritarParenteses(escaparUnderscores(passo.texto))}\n`;
+    template.preparativos.forEach((prep: Preparativo, i) => {
+      const tituloFormatado = prep.titulo.startsWith("Preparativo")
+        ? escaparUnderscores(prep.titulo)
+        : `Preparativo ${i + 1}: ${escaparUnderscores(prep.titulo)}`;
+
+      md += `### :rosette: ${tituloFormatado}\n`;
+      prep.passos.forEach((passo, j) => {
+        md += `${j + 1}. ${negritarParenteses(
+          escaparUnderscores(passo.texto)
+        )}\n`;
       });
       md += `\n____\n`;
     });
@@ -140,7 +146,9 @@ export function gerarMarkdown(template: Template, isPreview: boolean = false): s
         md += `\n--- ${etapaContador}${sufixo} Etapa ---\n\n`;
         etapaContador++;
       } else {
-        let linha = `${n}. ${negritarParenteses(escaparUnderscores(passo.texto))}`;
+        let linha = `${n}. ${negritarParenteses(
+          escaparUnderscores(passo.texto)
+        )}`;
         if (passo.criteriosVinculados && passo.criteriosVinculados.length > 0) {
           const nums = passo.criteriosVinculados
             .map((idx) => (typeof idx === "number" ? idx + 1 : Number(idx) + 1))

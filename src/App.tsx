@@ -62,12 +62,11 @@ export default function App() {
           <div className="card shadow-sm card-content">
             <div className="card-body">
               <h4 className="h4">
-                <small>Gerador de Template GitLab</small>
-                {template.nomeTarefa && (
-                  <span className="ms-2 text-muted" style={{ fontWeight: 400 }}>
-                    ({template.nomeTarefa})
-                  </span>
-                )}
+                <small className="text-muted">
+                  {template.nomeTarefa
+                    ? template.nomeTarefa
+                    : "Gerador de Template GitLab"}
+                </small>
               </h4>
               <ToolbarSuperior />
               <hr />

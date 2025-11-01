@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { smartReplace } from '../helpers';
 
 type Passo = { texto: string };
 
@@ -69,7 +70,7 @@ export default function NovoBlocoModal({
                 value={p.texto}
                 onChange={(e) => {
                   const novo = [...passos];
-                  novo[i].texto = e.target.value;
+                  novo[i].texto = smartReplace(e.target.value);
                   setPassos(novo);
                 }}
               />
