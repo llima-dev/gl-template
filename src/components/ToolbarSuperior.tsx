@@ -18,11 +18,11 @@ import {
 } from "../helpers";
 import { useTemplateStore } from "../context/TemplateContext";
 import type { Template } from "../types";
+import ArquivadosTable from "./ArquivadosTable";
 
 export default function ToolbarSuperior() {
   const { template, setTemplate, limpar } = useTemplateStore();
   const [mostrarArquivados, setMostrarArquivados] = useState(false);
-  const [busca, setBusca] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleExportar() {
@@ -103,12 +103,6 @@ export default function ToolbarSuperior() {
     novosArquivados.splice(idx, 1);
     setTemplate({ ...template, arquivados: novosArquivados });
   }
-
-  const arquivadosFiltrados = template.arquivados?.filter(
-    (t) =>
-      (t.nomeTarefa || "").toLowerCase().includes(busca.toLowerCase()) ||
-      (t.escopo || "").toLowerCase().includes(busca.toLowerCase())
-  );
 
   // ---- Render ----
   return (
@@ -197,44 +191,27 @@ export default function ToolbarSuperior() {
                   />
                 </div>
                 <div className="modal-body">
-                  <input
-                    type="text"
-                    className="form-control mb-3"
-                    placeholder="Buscar por nome ou escopo..."
-                    value={busca}
-                    onChange={(e) => setBusca(e.target.value)}
-                  />
-                  {arquivadosFiltrados?.length ? (
-                    <ul className="list-group">
-                      {arquivadosFiltrados.map((t, idx) => (
-                        <li
-                          key={idx}
-                          className="list-group-item d-flex justify-content-between align-items-start"
-                        >
-                          <div>
-                            <strong>{t.nomeTarefa || "(sem nome)"}</strong>
-                            <br />
-                            <small className="text-muted">
-                              {t.escopo || "Sem escopo"}
-                            </small>
-                          </div>
-                          <div className="btn-group btn-group-sm">
-                            <button
-                              className="btn btn-outline-danger"
-                              onClick={() => removerArquivado(idx)}
-                            >
-                              Remover
-                            </button>
-                            <button
-                              className="btn btn-outline-primary"
-                              onClick={() => desarquivarTemplate(idx)}
-                            >
-                              Desarquivar
-                            </button>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
+                  {template.arquivados?.length ? (
+                    <ArquivadosTable
+                      templates={template.arquivados}
+                      onDesarquivar={desarquivarTemplate}
+                      onRemover={async (idx: number) => {
+                        const result = await Swal.fire({
+                          title: `Remover template definitivamente?`,
+                          text: "Essa ação é irreversível!",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonText: "Sim, remover",
+                          cancelButtonText: "Cancelar",
+                          reverseButtons: true,
+                        });
+
+                        if (result.isConfirmed) {
+                          removerArquivado(idx);
+                          sweetMessage("Arquivados removidos!");
+                        }
+                      }}
+                    />
                   ) : (
                     <p>Nenhum template arquivado.</p>
                   )}
