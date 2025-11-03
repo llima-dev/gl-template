@@ -62,7 +62,7 @@ export default function Criterios() {
         <ul className="list-group">
           {template.criterios.map((criterio, index) => (
             <li
-              className="list-group-item d-flex justify-content-between align-items-center"
+              className="list-group-item d-flex justify-content-between align-items-center pl-1 pt-0 pb-0"
               key={index}
             >
               <div className="d-flex align-items-center flex-grow-1">

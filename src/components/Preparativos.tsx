@@ -207,7 +207,7 @@ function SortablePasso({
     <li
       ref={setNodeRef}
       style={style}
-      className="list-group-item d-flex justify-content-between align-items-center"
+      className="list-group-item d-flex justify-content-between align-items-center pl-1 pt-0 pb-0"
       {...attributes}
     >
       {/* Drag handle */}

@@ -66,3 +66,6 @@
   border-radius: 8px;
   border: 2px solid #f7f7fa;
 }
+.list-group-item:hover {
+  background-color: #6cb3f641 !important;
+}

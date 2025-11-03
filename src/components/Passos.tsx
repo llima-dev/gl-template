@@ -40,10 +40,14 @@ function SortableItem({
   passo,
   onClick,
   onRemover,
+  setPassoSelecionado,
+  setModalAberta
 }: {
   passo: Passo;
   onClick: () => void;
   onRemover: () => void;
+  setPassoSelecionado: (id: string) => void;
+  setModalAberta: (aberto: boolean) => void;
 }) {
   const { template } = useTemplateStore();
   const {
@@ -59,11 +63,19 @@ function SortableItem({
     transition,
   };
 
+  const classDiv = passo.isDivisoria ? 'divisoria' : '';
+
   return (
     <li
       ref={setNodeRef}
       style={style}
-      className="list-group-item d-flex align-items-center justify-content-between gap-3"
+      className={"list-group-item d-flex align-items-center justify-content-between gap-2 pl-1 pt-0 pb-0 " + classDiv}
+      onDoubleClick={() => {
+        if (!passo.isDivisoria) {
+          setPassoSelecionado(passo.id);
+          setModalAberta(true);
+        }
+      }}
     >
       {/* Ícone de arrastar */}
       <span style={{ cursor: "grab" }} {...attributes} {...listeners}>
@@ -71,8 +83,8 @@ function SortableItem({
       </span>
 
       {/* Conteúdo principal */}
-      <div className="flex-grow-1 d-flex flex-wrap align-items-center gap-2">
-        <span className="fw-semibold passo-title">
+      <div className="flex-grow-1 d-flex flex-wrap align-items-center gap-2 pt-1 pb-1">
+        <span className="fw-semibold passo-title" title={passo.texto}>
           {passo.texto || "(Sem texto)"}
         </span>
 
@@ -349,6 +361,8 @@ export default function Passos() {
               <SortableItem
                 key={passo.id}
                 passo={passo}
+                setPassoSelecionado={setPassoSelecionado}
+                setModalAberta={setModalAberta}
                 onClick={() => {
                   setPassoSelecionado(passo.id);
                   setModalAberta(true);

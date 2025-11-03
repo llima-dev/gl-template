@@ -22,3 +22,17 @@
   max-height: none !important;
   display: block;
 }
+
+.divisoria {
+  color: #6cb4f6;
+  font-size: 14px;
+}
+
+.passo-title {
+  display: inline-block;        /* garante que o texto respeite largura */
+  max-width: 500px;             /* ajusta conforme o layout */
+  overflow: hidden;             /* corta o que passa do limite */
+  text-overflow: ellipsis;      /* adiciona os '...' */
+  white-space: nowrap;          /* impede quebra de linha */
+  vertical-align: middle;
+}
