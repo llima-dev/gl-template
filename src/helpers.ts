@@ -189,6 +189,14 @@ export function gerarMarkdown(template: Template, isPreview: boolean = false): s
     md += `${escaparUnderscores(template.impacto)}\n____\n`;
   }
 
+  // CHECKLIST FIXO
+  md += `### :warning: Checklist de itens indispensáveis
+  * [ ] Revisão do plano de teste (PO)
+  * [ ] Revisão do plano de teste (QA)
+  * [ ] Code review do Tech Lead
+  ____
+  `;
+
   // NAVEGADORES
   if (template.navegadores) {
     md += `### :ship: Navegadores testados:\n`;
