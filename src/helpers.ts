@@ -388,9 +388,11 @@ export function gerarFluxogramaMermaid(template: Template) {
   return diagrama;
 }
 
+
 export function gerarTextoKanban(kanban: TemplateKanban, isBug: boolean): string {
   let passoNum = 1;
   let etapaNum = 1;
+
   const lista = (kanban.passos || [])
     .map(p => p.isDivisoria
       ? `- ${etapaNum++}ª Etapa ---`
@@ -400,28 +402,80 @@ export function gerarTextoKanban(kanban: TemplateKanban, isBug: boolean): string
 
   if (isBug) {
     return [
-      "🟦 DESCRIÇÃO DO PROBLEMA",
+      "Contexto",
       kanban.descricaoProblema || "-",
       "",
-      "🟧 COMO REPRODUZIR (PASSO A PASSO)",
+      "Passo a passo",
       lista || "-",
       "",
-      "🟩 RESULTADO ESPERADO",
+      "Resultado esperado",
       kanban.resultadoEsperado || "-",
       "",
-      "🟥 RESULTADO OBTIDO",
+      "Resultado obtido",
       kanban.resultadoObtido || "-",
       "",
-      "🟪 ANÁLISE EXTRA",
+      "Análise extra",
       kanban.analiseExtra || "-",
     ].join('\n');
   } else {
     return [
-      "🟦 IMPLEMENTAÇÃO",
+      "Contexto",
       kanban.implementacao || "-",
       "",
-      "🟪 DETALHAMENTO",
+      "Detalhamento",
       kanban.detalhamento || "-",
     ].join('\n');
   }
+}
+
+export function gerarHtmlKanban(kanban: TemplateKanban, isBug: boolean): string {
+  let passoNum = 1;
+  let etapaNum = 1;
+
+  const lista = (kanban.passos || [])
+    .map(p =>
+      p.isDivisoria
+        ? `<div><b>${etapaNum++}ª Etapa</b></div>`
+        : `<div>${passoNum++}. ${p.texto}</div>`
+    )
+    .join("");
+
+    if (isBug) {
+          return `
+            <b>Contexto</b><br>
+          ${kanban.descricaoProblema || "-"}<br><br>
+
+            <b>Passo a passo</b><br>
+          ${lista}<br>
+
+            <b>Resultado esperado</b><br>
+          ${kanban.resultadoEsperado || "-"}<br><br>
+
+            <b>Resultado obtido</b><br>
+          ${kanban.resultadoObtido || "-"}<br><br>
+
+          <b>Análise extra</b><br>
+          ${kanban.analiseExtra || "-"}
+      `;
+    }
+
+      return `
+    <b>Contexto</b><br>
+      ${kanban.implementacao || "-"}<br><br>
+
+    <b>Detalhamento</b><br>
+      ${kanban.detalhamento || "-"}
+    `;
+}
+
+export async function copiarKanbanRich(
+  html: string,
+  texto: string
+) {
+  await navigator.clipboard.write([
+    new ClipboardItem({
+      "text/html": new Blob([html], { type: "text/html" }),
+      "text/plain": new Blob([texto], { type: "text/plain" })
+    })
+  ]);
 }

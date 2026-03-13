@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { useKanbanTemplateStore } from "../context/KanbanTemplateContext";
 import PassosKanban from "./PassosKanban";
-import { gerarTextoKanban, smartReplace, sweetMessage } from "../helpers";
+import { 
+  gerarTextoKanban,
+  smartReplace,
+  sweetMessage,
+  copiarKanbanRich,
+  gerarHtmlKanban
+} from "../helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faBroom } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faCopy,
+  faBroom,
+  faListCheck,
+  faBug
+} from "@fortawesome/free-solid-svg-icons";
 
 import "./FormKanban.css";
 
@@ -14,7 +25,9 @@ export default function FormKanban() {
 
   function handleCopiar() {
     const texto = gerarTextoKanban(kanban, isBug);
-    navigator.clipboard.writeText(texto).then(() => {
+    const html = gerarHtmlKanban(kanban, isBug);
+
+    copiarKanbanRich(html, texto).then(() => {
       setCopiado(true);
       sweetMessage("O texto da tarefa foi copiado!");
       setTimeout(() => setCopiado(false), 1200);
@@ -32,23 +45,17 @@ export default function FormKanban() {
 
   return (
     <div>
-      <div className="kanban-toolbar d-flex align-items-center gap-2 p-2 bg-white rounded shadow-sm mb-2">
+      <div className="kanban-toolbar">
         <div className="d-flex align-items-center me-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="bugSwitch"
-            checked={isBug}
-            onChange={() => setIsBug((val) => !val)}
-            style={{ cursor: "pointer" }}
-          />
-          <label
-            className="form-check-label ms-1 fw-semibold"
-            htmlFor="bugSwitch"
+          <button
+            type="button"
+            className={`kanban-toggle ${isBug ? "active" : ""}`}
+            title="Alternar tipo de atividade"
+            onClick={() => setIsBug((v) => !v)}
           >
-            🐞 Bug
-          </label>
+            <FontAwesomeIcon icon={isBug ? faBug : faListCheck} />
+            <span>{isBug ? " Bug" : " Tarefa"}</span>
+          </button>
         </div>
         <button
           className={`btn btn-outline-secondary btn-sm kanban-toolbar-btn${
